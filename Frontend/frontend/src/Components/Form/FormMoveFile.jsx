@@ -43,7 +43,7 @@ function FormMoveFile(props) {
         e.preventDefault();
         handleSubmit1();
         props.handleClose();
-        // window.location.reload();
+        window.location.reload();
       }}
     >
       <div className="text-field">
