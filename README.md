@@ -30,6 +30,8 @@ Plus d'information: [Voir le site React js](https://fr.reactjs.org/)
 ## Fonctionnalités
 
 ### Structure Application (App.js)
+#### Les différents fichiers
+#### Les différents modules utilisés
 #### Mise en place du serveur
 #### Déclaration des routes
 
@@ -37,22 +39,146 @@ Plus d'information: [Voir le site React js](https://fr.reactjs.org/)
 
 #### Route /fileContent
 ##### Présentation
+Cette route de type 'POST' est ulisée pour lire le contenu d'un fichier. 
 ##### Code
+
+Dans App.js
+
+Déclaration de la route dans App.js:
+```
+app.post("/fileContent", async function (req, res) {
+  let oneFile = await fileController
+    .GetOneFile(req.body.path)
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => {
+      return error;
+    });
+  res.json(oneFile);
+});
+```
+Nous faissons appel à la fonction 'GetOneFile' de 'fileController'. Nous attendons le résultat de cette fonction, puis nous envoyons une réponse au format JSON. 
+
+Dans fileController:
+
+La fonction 'readFileSync' permet de lire le contenu d'un fichier. Nous retournons le resultat de la lecture.
+```
+async function getOneFile(completePath) {
+  return fs.readFileSync(completePath, "UTF-8", (err, file) => {
+    if (err) {
+      return err;
+    } else {
+      return file;
+    }
+  });
+}
+```
 ##### Demonstration
 
 #### Route /addFile
 ##### Présentation
+Cette route de type 'POST' est ulisée pour créer un nouveau fichier. 
 ##### Code
+Dans App.js:
+Nous faissons appel à la fonction 'AddFile' de 'fileController'. Nous attendons le résultat de cette fonction, puis nous envoyons une réponse au format JSON. 
+```
+app.post("/addFile", async function (req, res) {
+  let addedFile = await fileController
+    .AddFile(req.body)
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => {
+      return error;
+    });
+  res.json(addedFile);
+});
+```
+Dans fileController:
+
+Pour créer un nouveau fichier, nous utilisons la fonction 'writeFileSync'. Nous envoyons le chemin du fichier en arguments. Cette fonction permet d'écrire dans un fichier s'il existe déjà ou de le créer s'il n'existe pas.
+```
+async function createFile(completePath) {
+  fs.writeFileSync(completePath, "", (err) => {
+    if (err) {
+      return err;
+    } else {
+      console.log("The file has been created!");
+      return "File created";
+    }
+  });
+}
+```
 ##### Demonstration
 
 #### Route /deleteFile
 ##### Présentation
+Cette route de type 'DELETE' est ulisée pour supprimer un fichier. 
 ##### Code
+Dans App.js:
+Nous faissons appel à la fonction 'DeleteFile' de 'fileController'. Nous envoyons le chemin du fichier en arguments. Nous attendons le résultat de cette fonction, puis nous envoyons une réponse au format JSON. 
+```
+app.delete("/deleteFile", async function (req, res) {
+  await fileController
+    .DeleteFile(req.body.path)
+    .then(() => {
+      res.status(200).send("Deletion OK");
+    })
+    .catch((error) => {
+      res.status(400).send(error);
+    });
+});
+```
+Dans fileController:
+La fonction "unlinkSync" permet de supprimer un fichier.
+```
+async function deleteFile(completePath) {
+  try {
+    fs.unlinkSync(completePath);
+    //file removed
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+```
 ##### Demonstration
 
 #### Route /moveFile
 ##### Présentation
+Cette route de type 'POST' est ulisée pour déplacer un fichier. 
 ##### Code
+Dans App.js:
+Nous faissons appel à la fonction 'MoveOneFile' de 'fileController'. Arguments sont requis, le chemin actuel et le nouveau chemin.
+Nous attendons le résultat de cette fonction, puis nous envoyons une réponse au format JSON. 
+```
+app.post("/moveFile", async function (req, res) {
+  console.log(req.body);
+  let oneFile = await fileController
+    .MoveOneFile(req.body.data.oldPath, req.body.data.newPath)
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => {
+      return error;
+    });
+  res.json(oneFile);
+});
+```
+Dans fileController:
+La fonction 'renameSync' permet de modifier le chemin d'un fichier, donc de le déplacer.
+```
+async function moveOneFile(oldpath, newPath) {
+  try {
+    fs.renameSync(oldpath, newPath);
+    return "file moved successfully";
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+}
+```
 ##### Demonstration
 
 ### Dossiers
