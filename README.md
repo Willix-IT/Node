@@ -8,6 +8,8 @@ Ce projet a été realisé par les contributeurs suivants
 - William HERBIN
 - Florian GILLET
 
+## Installation
+
 ## Technologies utilisées
 
 ### Backend - Node js
@@ -21,3 +23,12 @@ Plus d'information: [Voir le site Node js](https://nodejs.org/fr/about/)
 React est une bibliothèque JavaScript libre développée par Facebook depuis 2013. Le but principal de cette bibliothèque est de faciliter la création d'application web monopage, via la création de composants dépendant d'un état et générant une page HTML à chaque changement d'état.\
 Version de React utilisée: 18.0.0
 Plus d'information: [Voir le site React js](https://fr.reactjs.org/)
+
+## Fonctionnalités
+### Fichiers
+#### Route 1 + explication
+#### Route 2 + explication
+### Dossiers
+#### Route 1 + explication
+#### Route 2 + explication
+
