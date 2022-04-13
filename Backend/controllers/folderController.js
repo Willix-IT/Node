@@ -13,21 +13,6 @@ async function getOneFolder(completePath) {
   });
 }
 
-function getAllFolders() {
-  return new Promise((resolve, reject) => {
-    mongoose
-      .model("Folder")
-      .find({})
-      .exec(function (err, folders) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(folders);
-        }
-      });
-  });
-}
-
 async function createFolder(completePath) {
   fs.mkdirSync(completePath, (err) => {
     if (err) {
@@ -36,26 +21,6 @@ async function createFolder(completePath) {
       console.log("The folder has been created!");
       return "Folder created";
     }
-  });
-}
-
-function updateFolder(id, data) {
-  return new Promise((resolve, reject) => {
-    mongoose
-      .model("Folder")
-      .findOneAndUpdate(
-        { _id: id },
-        data,
-        { returnOriginal: false },
-        function (err, folder) {
-          if (err) {
-            console.log(err);
-            reject("Can't update folder");
-          } else {
-            resolve(folder);
-          }
-        }
-      );
   });
 }
 
@@ -88,16 +53,8 @@ module.exports = {
     });
   },
 
-  GetAllFolders: async () => {
-    return getAllFolders();
-  },
-
   AddFolder: async (data) => {
     return createFolder(data.data.address + "/" + data.data.name);
-  },
-
-  UpdateFolder: async (id, data) => {
-    return updateFolder(id, data);
   },
 
   MoveOneFolder: (oldPath, newPath) => {

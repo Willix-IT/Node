@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
 const fs = require("fs");
-const path = require("path");
+
 
 async function getOneFile(completePath) {
   return fs.readFileSync(completePath, "UTF-8", (err, file) => {

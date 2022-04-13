@@ -17,9 +17,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const port = process.env.PORT || 3000;
 
-////////////////////////////////////////////////////////////////////////////// APP ROUTES FILES //////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////// APP ROUTES //////////////////////////////////////////////////////////////
 
-app.post("/folderDetail", async function (req, res, next) {
+// GET ONE FOLDER AND ITS CONTENT
+app.post("/folderDetail", async function (req, res) {
   let oneFolder = await folderController
     .GetOneFolder(req.body.path)
     .then((result) => {
@@ -32,7 +33,8 @@ app.post("/folderDetail", async function (req, res, next) {
   res.json(oneFolder);
 });
 
-app.post("/fileContent", async function (req, res, next) {
+// GET ONE FILE AND ITS CONTENT
+app.post("/fileContent", async function (req, res) {
   let oneFile = await fileController
     .GetOneFile(req.body.path)
     .then((result) => {
@@ -44,7 +46,8 @@ app.post("/fileContent", async function (req, res, next) {
   res.json(oneFile);
 });
 
-app.post("/addFile", async function (req, res, next) {
+// ADD A NEW FILE TO THE SPECIFIED FOLDER
+app.post("/addFile", async function (req, res) {
   let addedFile = await fileController
     .AddFile(req.body)
     .then((result) => {
@@ -56,7 +59,8 @@ app.post("/addFile", async function (req, res, next) {
   res.json(addedFile);
 });
 
-app.post("/addFolder", async function (req, res, next) {
+// ADD A NEW FOLDER TO THE SPECIFIED FOLDER
+app.post("/addFolder", async function (req, res) {
   let addedFolder = await folderController
     .AddFolder(req.body)
     .then((result) => {
@@ -68,7 +72,8 @@ app.post("/addFolder", async function (req, res, next) {
   res.json(addedFolder);
 });
 
-app.delete("/deleteFolder", async function (req, res, next) {
+// DELETE A FOLDER
+app.delete("/deleteFolder", async function (req, res) {
   await folderController
     .DeleteFolder(req.body.path)
     .then(() => {
@@ -79,7 +84,8 @@ app.delete("/deleteFolder", async function (req, res, next) {
     });
 });
 
-app.delete("/deleteFile", async function (req, res, next) {
+// DELETE A FILE
+app.delete("/deleteFile", async function (req, res) {
   await fileController
     .DeleteFile(req.body.path)
     .then(() => {
@@ -90,8 +96,9 @@ app.delete("/deleteFile", async function (req, res, next) {
     });
 });
 
-app.post("/moveFile", async function (req, res, next) {
-  console.log(req.body)
+// MOVE A FILE TO ANOTHER FOLDER
+app.post("/moveFile", async function (req, res) {
+  console.log(req.body);
   let oneFile = await fileController
     .MoveOneFile(req.body.data.oldPath, req.body.data.newPath)
     .then((result) => {
@@ -103,7 +110,8 @@ app.post("/moveFile", async function (req, res, next) {
   res.json(oneFile);
 });
 
-app.post("/moveFolder", async function (req, res, next) {
+// MOVE A FOLDER TO ANOTHER FOLDER
+app.post("/moveFolder", async function (req, res) {
   await folderController
     .MoveOneFolder(req.body.data.oldPath, req.body.data.newPath)
     .then((result) => {
@@ -114,8 +122,8 @@ app.post("/moveFolder", async function (req, res, next) {
     });
 });
 
-app.post("/bash", async function (req, res, next) {
-  console.log(req.body)
+// EXECUTE A COMMAND AND RETURN ITS RESULT
+app.post("/bash", async function (req, res) {
   exec(req.body.data, (error, stdout, stderr) => {
     if (error) {
       console.log(`error: ${error.message}`);
@@ -132,6 +140,7 @@ app.post("/bash", async function (req, res, next) {
   });
 });
 
+////////////////////////////////////////////////////////////////////////////// APP START //////////////////////////////////////////////////////////////
 app.listen(port, () => {
   console.log("Server app listening on port " + port);
 });
