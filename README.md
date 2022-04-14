@@ -27,14 +27,6 @@ React est une bibliothèque JavaScript libre développée par Facebook depuis 20
 Version de React utilisée: 18.0.0
 Plus d'information: [Voir le site React js](https://fr.reactjs.org/)
 
-## Fonctionnalités
-
-### Structure Application (App.js)
-#### Les différents fichiers
-#### Les différents modules utilisés
-#### Mise en place du serveur
-#### Déclaration des routes
-
 ### Fichiers
 
 #### Route /fileContent
@@ -74,7 +66,6 @@ async function getOneFile(completePath) {
   });
 }
 ```
-##### Demonstration
 
 #### Route /addFile
 ##### Présentation
@@ -110,7 +101,6 @@ async function createFile(completePath) {
   });
 }
 ```
-##### Demonstration
 
 #### Route /deleteFile
 ##### Présentation
@@ -143,7 +133,6 @@ async function deleteFile(completePath) {
 }
 
 ```
-##### Demonstration
 
 #### Route /moveFile
 ##### Présentation
@@ -179,33 +168,108 @@ async function moveOneFile(oldpath, newPath) {
   }
 }
 ```
-##### Demonstration
 
 ### Dossiers
 
 #### Route /folderDetail
 ##### Présentation
+Cette route de type 'POST' permet de lister le contenu d'un dossier.
 ##### Code
-##### Demonstration
 
 #### Route /addFolder
 ##### Présentation
+Cette route de type 'POST' permet de créer un nouveau dossier.
 ##### Code
-##### Demonstration
-
+Dans App.js:
+```
+app.post("/addFolder", async function (req, res) {
+  let addedFolder = await folderController
+    .AddFolder(req.body)
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => {
+      return error;
+    });
+  res.json(addedFolder);
+});
+```
+Dans folderController.js:
+Pour créer un dosiier, nous utilisons la fonction mkdirSync. Elle prend en argument, le chemin du nouveau dossier.
+```
+async function createFolder(completePath) {
+  fs.mkdirSync(completePath, (err) => {
+    if (err) {
+      return err;
+    } else {
+      console.log("The folder has been created!");
+      return "Folder created";
+    }
+  });
+}
+```
 #### Route /deleteFolder
 ##### Présentation
+Cette route de type 'DELETE' permet de supprimer un dossier.
 ##### Code
-##### Demonstration
+Dans App.js:
+```
+async function deleteFolder(completePath) {
+  try {
+    fs.rmSync(completePath, { recursive: true, force: true });
+  } catch (err) {
+    console.error(err);
+  }
+}
+```
+Dans folderController.js:
+Pour supprimer un dossier, nous utilisons la fonction DeleteFolder. Elle prend en argument, le chemin du dossier à supprimer.
+```
+app.delete("/deleteFolder", async function (req, res) {
+  await folderController
+    .DeleteFolder(req.body.path)
+    .then(() => {
+      res.status(200).send("Deletion OK");
+    })
+    .catch((error) => {
+      res.status(400).send(error);
+    });
+});
+```
 
 #### Route /moveFolder
 ##### Présentation
+Cette route de type 'POST' permet de déplacer un dossier.
 ##### Code
-##### Demonstration
+Dans App.js:
+```
+app.post("/moveFolder", async function (req, res) {
+  await folderController
+    .MoveOneFolder(req.body.data.oldPath, req.body.data.newPath)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+});
+```
+Dans folderController.js:
+Pour déplacer un dossier, nous utilison la fonction move. Elle prend en argument, le chemin actuel et le nouveau chemin.
+```
+async function moveOneFolder(oldpath, newPath) {
+  try {
+    fs_extra.move(oldpath, newPath);
+    return "Folder moved successfully";
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+}
+```
 
 ### Bash
 
 #### Route /bash
 ##### Présentation
 ##### Code
-##### Demonstration
