@@ -18,8 +18,6 @@ Node.js est un environnement bas niveau permettant l’exécution de JavaScript 
 Version du framework utilisée: 17.9.0 
 Plus d'information: [Voir le site Node js](https://nodejs.org/fr/about/)
 
-#### Express js
-
 ### FrontEnd 
 #### React js
 
