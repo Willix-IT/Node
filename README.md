@@ -175,6 +175,35 @@ async function moveOneFile(oldpath, newPath) {
 ##### Présentation
 Cette route de type 'POST' permet de lister le contenu d'un dossier.
 ##### Code
+Dans app.js:
+```
+app.post("/folderDetail", async function (req, res) {
+  let oneFolder = await folderController
+    .GetOneFolder(req.body.path)
+    .then((result) => {
+      return result;
+    })
+    .catch((error) => {
+      return error;
+    });
+
+  res.json(oneFolder);
+});
+```
+Dans folderController.js:
+Pour lire un dossier, nous utilisons la fonction readdirSync. Elle prend en argument, le chemin du dossier à lire.
+```
+async function getOneFolder(completePath) {
+  return fs.readdirSync(completePath, (err, files) => {
+    if (err) {
+      return err;
+    } else {
+      return files;
+    }
+  });
+}
+```
+
 
 #### Route /addFolder
 ##### Présentation
@@ -195,7 +224,7 @@ app.post("/addFolder", async function (req, res) {
 });
 ```
 Dans folderController.js:
-Pour créer un dosiier, nous utilisons la fonction mkdirSync. Elle prend en argument, le chemin du nouveau dossier.
+Pour créer un dossier, nous utilisons la fonction mkdirSync. Elle prend en argument, le chemin du nouveau dossier.
 ```
 async function createFolder(completePath) {
   fs.mkdirSync(completePath, (err) => {
@@ -272,4 +301,24 @@ async function moveOneFolder(oldpath, newPath) {
 
 #### Route /bash
 ##### Présentation
+Cette route de type 'POST' permet d'executer une commande bash.
 ##### Code
+Pour pouvoir executer une commande bash, nous utilisons la fonction 'exec'. Elle prend en argument la commande. Elle peut retourner une erreur (error), le résultat de la commande (stdout) et si la commande retourne autre chose que 'succès' mais que la commande fonctionne (stderr)
+```
+app.post("/bash", async function (req, res) {
+  exec(req.body.data, (error, stdout, stderr) => {
+    if (error) {
+      console.log(`error: ${error.message}`);
+      res.send(error.message);
+      return;
+    }
+    if (stderr) {
+      console.log(`stderr: ${stderr}`);
+      res.send(stderr);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    res.send(stdout);
+  });
+});
+```
